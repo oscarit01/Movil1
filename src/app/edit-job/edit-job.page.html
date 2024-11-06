@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Editar Trabajo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" style="background-color: #F7E7CE;"> <!-- Color champán -->
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+
+  <form *ngIf="job && !errorMessage" (ngSubmit)="updateJob()">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Detalles del Trabajo</ion-card-title>
+        <ion-card-subtitle>Por favor, edita la información del trabajo</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Título del Trabajo</ion-label>
+          <ion-input [(ngModel)]="job.title" name="title" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Categoría</ion-label>
+          <ion-input [(ngModel)]="job.category" name="category" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Descripción</ion-label>
+          <ion-textarea [(ngModel)]="job.description" name="description" required></ion-textarea>
+        </ion-item>
+
+        <div class="button-container">
+          <ion-button expand="full" type="submit" color="secondary">Guardar Cambios</ion-button>
+          <ion-button expand="full" color="danger" (click)="deleteJob()">Eliminar Oferta</ion-button> <!-- Botón para eliminar -->
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </form>
+</ion-content>

@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Perfil Guardado</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" style="background-color: #ffebc2;">
+  <!-- Tarjeta del perfil del usuario -->
+  <ion-card *ngIf="userData" style="background-color: #ffffff; margin-bottom: 20px; border-radius: 15px;">
+    <ion-card-header>
+      <ion-card-title style="font-weight: bold; color: #000000; font-size: 24px;">Perfil de Usuario</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content style="text-align: center;">
+      <!-- Mostrar imagen de perfil si está disponible -->
+      <img *ngIf="userData.profilePicture" [src]="userData.profilePicture" alt="Foto de Perfil" style="border-radius: 50%; width: 100px; height: 100px; object-fit: cover;" />
+      
+      <!-- Mensaje en caso de no tener foto -->
+      <p *ngIf="!userData.profilePicture" style="color: #ff0000;">No hay foto de perfil disponible.</p>
+
+      <!-- Nombre y descripción del usuario -->
+      <h2 style="color: #3a3a3a;">{{ userData.fullName }}</h2>
+      <p style="color: #646464; font-style: italic;">"{{ userData.description }}"</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Botón para editar el perfil -->
+  <ion-button expand="full" routerLink="/profile" color="secondary" style="border-radius: 8px;">
+    Editar Perfil
+  </ion-button>
+</ion-content>

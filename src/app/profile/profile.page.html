@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" style="background-color: #ffebc2;">
+
+  <!-- Mensaje de éxito -->
+  <div *ngIf="showSuccessMessage" style="color: green; text-align: center; margin-bottom: 15px;">
+    Datos guardados correctamente
+  </div>
+
+  <!-- Formulario para editar el perfil -->
+  <ion-card style="background-color: #ffffff; border-radius: 15px;">
+    <ion-card-header>
+      <ion-card-title style="font-weight: bold; color: #000000; font-size: 24px;">Editar Perfil</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form (ngSubmit)="saveProfile()" #profileForm="ngForm">
+        <ion-item>
+          <ion-label position="stacked" style="font-weight: bold; color: #000000;">Nombre completo</ion-label>
+          <ion-input type="text" [(ngModel)]="editUser.fullName" name="fullName" required style="border-radius: 8px;"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked" style="font-weight: bold; color: #000000;">Descripción</ion-label>
+          <ion-textarea [(ngModel)]="editUser.description" name="description" required style="border-radius: 8px;"></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+          <ion-label style="font-weight: bold; color: #000000;">Foto de Perfil</ion-label>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" style="border-radius: 8px;"/>
+        </ion-item>
+
+        <ion-button expand="full" type="submit" color="primary" style="border-radius: 8px;">Guardar</ion-button>
+
+        <p *ngIf="profileForm.invalid && profileForm.touched" style="color: #ff0000; margin-top: 10px;">
+          Por favor, complete todos los campos requeridos.
+        </p>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Botón para ir a la vista de perfil guardado -->
+  <ion-button expand="full" (click)="goToProfileView()" color="secondary" style="border-radius: 8px; margin-bottom: 10px;">
+    Ver Perfil Guardado
+  </ion-button>
+
+  <!-- Botón para volver al Home -->
+  <ion-button expand="full" (click)="goHome()" color="tertiary" style="border-radius: 8px;">Volver atrás</ion-button>
+</ion-content>

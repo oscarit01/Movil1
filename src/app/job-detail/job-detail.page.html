@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalles de la Chamba</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" style="background-color: #F7E7CE;">
+  <div *ngIf="job; else noJob" class="job-details">
+    <h2 style="color: #333;">{{ job.title }}</h2>
+    <p><strong>Categoría:</strong> {{ job.category }}</p>
+    <p>{{ job.description }}</p>
+    
+    <div class="button-container">
+      <ion-button expand="full" color="primary">Postular</ion-button>
+      <ion-button expand="full" color="tertiary" (click)="contactEmployer()">Contactar al Empleador</ion-button>
+    </div>
+  </div>
+
+  <ng-template #noJob>
+    <div class="no-job-message">
+      <p>No se encontraron detalles para esta chamba. Por favor, vuelve a intentarlo más tarde.</p>
+    </div>
+  </ng-template>
+</ion-content>
+
+<style>
+  .job-details {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  .button-container {
+    margin-top: 20px;
+  }
+
+  .no-job-message {
+    text-align: center;
+    margin-top: 50px;
+    color: #555;
+  }
+</style>

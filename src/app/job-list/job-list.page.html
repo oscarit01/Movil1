@@ -1,0 +1,68 @@
+<ion-menu contentId="main-content">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Menú</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding" style="background-color: #f1f1f1;">
+    <div class="menu-header">
+      <h1>Ajustes y Opciones</h1>
+      <p>Configura tu experiencia en Chamba Rápida</p>
+    </div>
+
+    <div class="menu-items">
+      <ion-button expand="full" color="tertiary" class="menu-button" (click)="goToProfile()">
+        Perfil de usuario
+      </ion-button>
+      <ion-button expand="full" color="tertiary" class="menu-button">
+        Ayuda
+      </ion-button>
+      <ion-button expand="full" color="tertiary" class="menu-button" (click)="goToAbout()">
+        Acerca de
+      </ion-button>
+      <ion-button expand="full" color="tertiary" class="menu-button" (click)="logout()">
+        Cerrar sesión
+      </ion-button>
+    </div>
+  </ion-content>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar color="secondary">
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Chambas Disponibles</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding" style="background-color: #F7E7CE;"> <!-- Color champán -->
+    <div class="job-list-container">
+      <h2>Explora las Chambas Disponibles</h2>
+      <p>
+        Aquí puedes encontrar las chambas publicadas por otros usuarios. ¡Revisa las ofertas y postula a las que más te interesen!
+      </p>
+
+      <div class="job-list">
+        <ion-card *ngFor="let job of jobs" (click)="goToJobDetail(job)">
+          <ion-card-header>
+            <ion-card-title>{{ job.title }}</ion-card-title>
+            <ion-card-subtitle>Categoría: {{ job.category }}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <p>{{ job.description }}</p>
+            <div class="button-container">
+              <ion-button expand="full" color="secondary" (click)="handleEditClick(job.id, $event)">Editar</ion-button> <!-- Botón para editar -->
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+      
+      <div class="button-container">
+        <ion-button expand="full" color="tertiary" routerLink="/create-job">Crear Nueva Oferta</ion-button>
+      </div>
+    </div>
+  </ion-content>
+</div>

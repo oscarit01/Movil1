@@ -1,0 +1,23 @@
+ion-content {
+    --background: #f7e7ce; /* Champán*/
+  }
+  
+  ion-button {
+    --background: #003366; /* Azul marino */
+    --color: #ffffff; /* Texto blanco */
+  }
+  .error-message {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #d9534f; /* Color rojo para el mensaje de error */
+    background-color: rgba(255, 227, 227, 0.5); /* Color de fondo suave */
+    padding: 10px;
+    border-radius: 5px;
+  
+    ion-icon {
+      margin-right: 5px; /* Espacio entre el icono y el texto */
+    }
+  }
+  
