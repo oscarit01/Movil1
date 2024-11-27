@@ -1,0 +1,39 @@
+<ion-content class="ion-padding" style="background-color: #f1f1f1;">
+  <!-- Estado de carga -->
+  <div *ngIf="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando tus ofertas de trabajo...</p>
+  </div>
+
+  <!-- Si hay trabajos creados -->
+  <div *ngIf="!loading && userJobs.length > 0">
+    <h2>Mis Ofertas de Trabajo</h2>
+    <div class="job-list">
+      <ion-card *ngFor="let job of userJobs">
+        <ion-card-header>
+          <ion-card-title>{{ job.title }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>{{ job.description }}</p>
+          <ion-button *ngIf="job.id" expand="block" color="primary" (click)="editJob(job.id!)">
+            Editar
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Si no hay trabajos creados -->
+  <div *ngIf="!loading && userJobs.length === 0 && !errorMessage">
+    <p>No has creado ninguna oferta de trabajo aún.</p>
+    <ion-button expand="block" color="tertiary" routerLink="/create-job">
+      Crear Nueva Oferta
+    </ion-button>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="!loading && errorMessage">
+    <ion-icon name="alert-circle-outline" color="danger"></ion-icon>
+    <p>{{ errorMessage }}</p>
+  </div>
+</ion-content>

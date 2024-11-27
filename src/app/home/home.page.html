@@ -12,13 +12,16 @@
     </div>
 
     <div class="menu-items">
+      <ion-button expand="full" color="tertiary" class="menu-button" (click)="goToHome()">
+        Ir al Home
+      </ion-button>
       <ion-button expand="full" color="tertiary" class="menu-button" (click)="goToProfile()">
         Perfil de usuario
       </ion-button>
       <ion-button expand="full" color="tertiary" class="menu-button">
         Ayuda
       </ion-button>
-      <ion-button expand="full" color="tertiary" class="menu-button" (click)="goToAbout()">
+      <ion-button expand="full" color="tertiary" class="menu-button" (click)="toggleAboutCard()">
         Acerca de
       </ion-button>
       <ion-button expand="full" color="tertiary" class="menu-button" (click)="logout()">
@@ -60,28 +63,30 @@
           <ion-card-title>Acerca de Chamba Rápida</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <p>Chamba Rápida es una plataforma que conecta a personas que buscan realizar mini trabajos de manera rápida y eficiente. Puedes contactarnos a través de nuestro correo electrónico: contacto.chambarapida.com.</p>
+          <p>
+            Chamba Rápida es una plataforma que conecta a personas que buscan realizar mini trabajos de manera rápida y eficiente.
+            Puedes contactarnos a través de nuestro correo electrónico: 
+            <a href="mailto:contacto@chambarapida.com">contacto.chambarapida.com</a>.
+          </p>
         </ion-card-content>
         <ion-button expand="full" color="danger" (click)="showAboutCard = false">Cerrar</ion-button>
       </ion-card>
     </div>
 
     <!-- Sección para mostrar las noticias -->
-    <div class="news-container">
-      <h3>Últimas Noticias</h3>
-      <ion-list>
-        <ion-item *ngFor="let article of articles">
-          <ion-thumbnail slot="start">
+    <div class="news-container" style="margin-top: 20px;">
+      <h3 style="text-align: center; font-size: 20px; margin-bottom: 10px;">Últimas Noticias</h3>
+      <ion-list style="max-height: 300px; overflow-y: auto; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+        <ion-item *ngFor="let article of articles" style="margin-bottom: 10px;">
+          <ion-thumbnail slot="start" style="width: 60px; height: 60px; border-radius: 8px;">
             <img [src]="article.urlToImage || '/assets/images/default-image.png'" alt="Imagen de noticia" />
           </ion-thumbnail>
           <ion-label>
-            <h2>{{ article.title }}</h2>
-            <p>{{ article.description }}</p>
-            <a [href]="article.url" target="_blank" ion-button>Leer más</a>
+            <h2 style="font-size: 16px; font-weight: bold;">{{ article.title }}</h2>
+            <a [href]="article.url" target="_blank" style="font-size: 14px; color: #3b82f6; text-decoration: underline;">Leer más</a>
           </ion-label>
         </ion-item>
       </ion-list>
     </div>
-
   </ion-content>
 </div>

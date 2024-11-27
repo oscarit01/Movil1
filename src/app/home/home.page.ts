@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NewsService } from '../news.service'; // Asegúrate de que la ruta sea correcta
+import { NewsService } from '../news.service';
 
 @Component({
   selector: 'app-home',
@@ -8,13 +8,22 @@ import { NewsService } from '../news.service'; // Asegúrate de que la ruta sea 
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  showAboutCard = false;
+  showAboutCard = false; // Controla la visibilidad de la tarjeta "Acerca de"
   articles: any[] = []; // Propiedad para almacenar los artículos de noticias
+  isLoading = true; // Indicador de carga
+  errorMessage: string | null = null; // Mensaje de error
 
   constructor(private router: Router, private newsService: NewsService) {}
 
   async ngOnInit() {
-    this.articles = await this.newsService.getTopHeadlines('us'); // Cargar noticias en la inicialización
+    try {
+      this.articles = await this.newsService.getTopHeadlines('us');
+    } catch (error) {
+      console.error('Error al cargar las noticias:', error);
+      this.errorMessage = 'No se pudieron cargar las noticias. Intenta nuevamente más tarde.';
+    } finally {
+      this.isLoading = false; // Finaliza la carga
+    }
   }
 
   goToProfile() {
@@ -34,7 +43,15 @@ export class HomePage implements OnInit {
   }
 
   goToAbout() {
-    this.showAboutCard = !this.showAboutCard;
+    this.toggleAboutCard(); // Llama al método toggle para mostrar/ocultar la tarjeta
+  }
+
+  toggleAboutCard() {
+    this.showAboutCard = !this.showAboutCard; // Alterna la visibilidad de la tarjeta "Acerca de"
+  }
+
+  goToHome() {
+    this.router.navigate(['/home']); // Redirige a la página Home
   }
 
   logout() {

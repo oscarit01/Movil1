@@ -12,6 +12,9 @@
     </div>
 
     <div class="menu-items">
+      <ion-button expand="full" color="tertiary" class="menu-button" (click)="goToHome()">
+        Ir al Home
+      </ion-button>
       <ion-button expand="full" color="tertiary" class="menu-button" (click)="goToProfile()">
         Perfil de usuario
       </ion-button>
@@ -20,6 +23,9 @@
       </ion-button>
       <ion-button expand="full" color="tertiary" class="menu-button" (click)="goToAbout()">
         Acerca de
+      </ion-button>
+      <ion-button expand="full" color="tertiary" class="menu-button" routerLink="/my-jobs">
+        Mis Ofertas de Trabajo
       </ion-button>
       <ion-button expand="full" color="tertiary" class="menu-button" (click)="logout()">
         Cerrar sesión
@@ -38,14 +44,27 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content class="ion-padding" style="background-color: #F7E7CE;"> <!-- Color champán -->
+  <ion-content class="ion-padding" style="background-color: #F7E7CE;">
     <div class="job-list-container">
       <h2>Explora las Chambas Disponibles</h2>
       <p>
         Aquí puedes encontrar las chambas publicadas por otros usuarios. ¡Revisa las ofertas y postula a las que más te interesen!
       </p>
 
-      <div class="job-list">
+      <!-- Mostrar spinner mientras se cargan las ofertas -->
+      <div *ngIf="loading" class="loading-spinner">
+        <ion-spinner name="crescent" color="secondary"></ion-spinner>
+        <p>Cargando ofertas...</p>
+      </div>
+
+      <!-- Mostrar mensaje de error si ocurre un problema -->
+      <div *ngIf="errorMessage" class="error-message">
+        <ion-icon name="alert-circle-outline" color="danger"></ion-icon>
+        <p>{{ errorMessage }}</p>
+      </div>
+
+      <!-- Lista de ofertas de trabajo -->
+      <div *ngIf="!loading && !errorMessage" class="job-list">
         <ion-card *ngFor="let job of jobs" (click)="goToJobDetail(job)">
           <ion-card-header>
             <ion-card-title>{{ job.title }}</ion-card-title>
@@ -53,15 +72,14 @@
           </ion-card-header>
           <ion-card-content>
             <p>{{ job.description }}</p>
-            <div class="button-container">
-              <ion-button expand="full" color="secondary" (click)="handleEditClick(job.id, $event)">Editar</ion-button> <!-- Botón para editar -->
-            </div>
           </ion-card-content>
         </ion-card>
       </div>
-      
+
+      <!-- Botones adicionales -->
       <div class="button-container">
         <ion-button expand="full" color="tertiary" routerLink="/create-job">Crear Nueva Oferta</ion-button>
+        <ion-button expand="full" color="secondary" routerLink="/my-jobs">Mis Trabajos Creados</ion-button>
       </div>
     </div>
   </ion-content>

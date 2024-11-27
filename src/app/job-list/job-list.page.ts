@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { JobService } from '../job.service'; // Importa el servicio
-import { Job } from '../job.model'; // Importa la interfaz Job
-import { Router } from '@angular/router'; // Importa Router para la navegación
-import { AuthService } from '../auth.service'; // Importa el servicio de autenticación
+import { JobService } from '../job.service'; // Servicio para interactuar con Firestore
+import { Job } from '../job.model'; // Interfaz Job
+import { Router } from '@angular/router'; // Para navegación
+import { AuthService } from '../auth.service'; // Servicio de autenticación
+import { Geolocation } from '@capacitor/geolocation'; // Importar Geolocalización
 
 @Component({
   selector: 'app-job-list',
@@ -10,8 +11,11 @@ import { AuthService } from '../auth.service'; // Importa el servicio de autenti
   styleUrls: ['./job-list.page.scss'],
 })
 export class JobListPage implements OnInit {
-  jobs: Job[] = []; // Arreglo para almacenar los trabajos
-  currentUserId: string | null = null; // Variable para almacenar el ID del usuario actual
+  jobs: Job[] = []; // Almacena todas las ofertas de trabajo
+  currentUserId: string | null = null; // ID del usuario autenticado
+  loading: boolean = true; // Indicador de carga
+  errorMessage: string | null = null; // Almacena mensajes de error
+  currentLocation: { latitude: number; longitude: number } | null = null; // Ubicación del usuario
 
   constructor(
     private jobService: JobService,
@@ -20,31 +24,49 @@ export class JobListPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // Obtener el ID del usuario autenticado
-    this.currentUserId = await this.authService.getUserId(); // Asegúrate de que este método existe en AuthService
+    try {
+      // Obtener el ID del usuario autenticado
+      this.currentUserId = await this.authService.getUserId();
 
-    // Suscribirse al Observable para obtener los trabajos
-    this.jobService.getJobs().subscribe(jobs => {
-      this.jobs = jobs; // Asigna los trabajos al arreglo
-      console.log('Trabajos cargados:', this.jobs); // Verifica que los trabajos se carguen correctamente
-    });
-  }
+      // Obtener la ubicación del usuario
+      await this.getUserLocation();
 
-  // Método para manejar el clic en el botón de editar
-  handleEditClick(jobId: string | undefined, event: Event) {
-    if (jobId) {
-      this.goToEditJob(jobId);
-      event.stopPropagation(); // Detiene la propagación del evento
+      // Obtener todas las ofertas de trabajo desde Firestore
+      this.jobService.getJobs().subscribe({
+        next: jobs => {
+          this.jobs = jobs.filter(job => job.id && job.title); // Filtrar trabajos válidos
+          console.log('Trabajos cargados:', this.jobs);
+          this.loading = false; // Finalizar carga
+        },
+        error: err => {
+          console.error('Error al cargar los trabajos:', err);
+          this.errorMessage = 'No se pudieron cargar las ofertas de trabajo.';
+          this.loading = false;
+        },
+      });
+    } catch (err) {
+      console.error('Error durante la inicialización:', err);
+      this.errorMessage = 'Error al obtener los datos del usuario.';
+      this.loading = false;
     }
   }
 
-  // Método para navegar a la página de edición del trabajo
-  goToEditJob(jobId: string) {
-    console.log('Navegando a la página de edición del trabajo con ID:', jobId);
-    this.router.navigate(['/edit-job', jobId]);
+  // Método para obtener la ubicación del usuario
+  async getUserLocation() {
+    try {
+      const position = await Geolocation.getCurrentPosition();
+      this.currentLocation = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      console.log('Ubicación actual:', this.currentLocation);
+    } catch (error) {
+      console.error('Error al obtener la ubicación:', error);
+      this.errorMessage = 'No se pudo obtener la ubicación actual.';
+    }
   }
 
-  // Método para navegar a la vista detallada del trabajo
+  // Navegar a los detalles de un trabajo
   goToJobDetail(job: Job) {
     if (job.id) {
       console.log('Navegando a los detalles del trabajo con ID:', job.id);
@@ -54,21 +76,27 @@ export class JobListPage implements OnInit {
     }
   }
 
-  // Método para navegar al perfil del usuario
+  // Navegar al Home
+  goToHome() {
+    console.log('Navegando al Home');
+    this.router.navigate(['/home']);
+  }
+
+  // Navegar al perfil del usuario
   goToProfile() {
     console.log('Navegando al perfil del usuario');
-    this.router.navigate(['/profile']); // Cambia la ruta según tu configuración
+    this.router.navigate(['/profile']);
   }
 
-  // Método para navegar a la sección "Acerca de"
+  // Navegar a la sección "Acerca de"
   goToAbout() {
     console.log('Navegando a la sección Acerca de');
-    this.router.navigate(['/about']); // Cambia la ruta según tu configuración
+    this.router.navigate(['/about']);
   }
 
-  // Método para cerrar sesión
+  // Cerrar sesión
   logout() {
     console.log('Cerrando sesión');
-    this.authService.logout(); // Asegúrate de tener un método logout en AuthService
+    this.authService.logout(); // Llama al método logout del servicio
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'; 
+import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { AuthService } from '../auth.service';
 
@@ -11,7 +11,7 @@ export class ProfilePage implements OnInit {
   user = {
     fullName: '',
     description: '',
-    profilePicture: null as string | ArrayBuffer | null,
+    profilePicture: null as string | null,
     displayName: '',
     displayDescription: '',
   };
@@ -22,9 +22,6 @@ export class ProfilePage implements OnInit {
   };
 
   isProfileVisible = true;
-  selectedFile: File | null = null;
-
-  // Variable para controlar la visualización del mensaje de éxito
   showSuccessMessage: boolean = false;
 
   constructor(
@@ -33,62 +30,76 @@ export class ProfilePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Cargar datos del localStorage al iniciar
     this.loadDataFromLocalStorage();
-    // Inicializar editUser con los datos del usuario
     this.editUser.fullName = this.user.displayName;
     this.editUser.description = this.user.displayDescription;
   }
 
+  // Manejar selección de archivo desde el sistema local
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.user.profilePicture = reader.result; // Visualización de la foto seleccionada
+        this.user.profilePicture = reader.result as string; // Muestra la imagen seleccionada
       };
       reader.readAsDataURL(file);
-      this.selectedFile = file;
     }
   }
 
-  async saveProfile() {
-    const userId = await this.authService.getUserId();
-    if (!userId) {
-      console.error('No se pudo obtener el ID del usuario');
+  // Tomar foto con la cámara del navegador
+  async takePictureWithBrowser() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert('Tu navegador no soporta el acceso a la cámara.');
       return;
     }
 
-    // Guardamos los datos del perfil en localStorage
-    // Asegúrate de convertir ArrayBuffer a string o usar null si es necesario
-    const profilePictureUrl = this.selectedFile ? this.user.profilePicture as string : null;
-    await this.updateProfile(userId, profilePictureUrl);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
-    // Mostrar el mensaje de éxito
+      // Crear un elemento de video dinámico
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+
+      // Crear un canvas para capturar la imagen
+      const canvas = document.createElement('canvas');
+      canvas.width = 640;
+      canvas.height = 480;
+
+      // Esperar un momento para estabilizar la cámara
+      setTimeout(() => {
+        const context = canvas.getContext('2d');
+        if (context) {
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          this.user.profilePicture = canvas.toDataURL('image/png'); // Actualizar foto de perfil
+        }
+
+        // Detener la cámara
+        stream.getTracks().forEach(track => track.stop());
+      }, 3000);
+    } catch (error) {
+      console.error('Error al acceder a la cámara:', error);
+      alert('No se pudo acceder a la cámara. Asegúrate de que tu navegador permita el acceso.');
+    }
+  }
+
+  saveProfile() {
+    this.user.displayName = this.editUser.fullName;
+    this.user.displayDescription = this.editUser.description;
+    this.saveDataToLocalStorage();
     this.showSuccessMessage = true;
+
     setTimeout(() => {
-      this.showSuccessMessage = false; // Ocultar mensaje después de 3 segundos
+      this.showSuccessMessage = false;
     }, 3000);
   }
 
-  private async updateProfile(userId: string, profilePictureUrl: string | null) {
-    // Actualizamos el objeto `user` local
-    this.isProfileVisible = true;
-    this.user.displayName = this.editUser.fullName;
-    this.user.displayDescription = this.editUser.description;
-    this.user.profilePicture = profilePictureUrl;
-
-    // Guardamos los datos actualizados en localStorage
-    this.saveDataToLocalStorage(profilePictureUrl);
-
-    alert('El perfil ha sido modificado exitosamente');
-  }
-
-  private saveDataToLocalStorage(profilePictureUrl: string | null) {
+  private saveDataToLocalStorage() {
     const userData = {
       fullName: this.editUser.fullName,
       description: this.editUser.description,
-      profilePicture: profilePictureUrl
+      profilePicture: this.user.profilePicture,
     };
     localStorage.setItem('userData', JSON.stringify(userData));
     console.log('Datos guardados en localStorage:', userData);

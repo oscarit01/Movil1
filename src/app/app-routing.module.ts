@@ -42,6 +42,10 @@ const routes: Routes = [
   {
     path: 'profile-view', // Ruta para la vista de perfil con datos de localStorage
     loadChildren: () => import('./profile-view/profile-view.module').then(m => m.ProfileViewPageModule)
+  },
+  {
+    path: 'my-jobs', // Nueva ruta para las ofertas creadas por el usuario
+    loadChildren: () => import('./user-jobs/user-jobs.module').then(m => m.UserJobsModule)
   }
 ];
 

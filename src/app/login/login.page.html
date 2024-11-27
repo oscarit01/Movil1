@@ -1,27 +1,61 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Iniciar Sesión</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title style="text-align: center;">Iniciar Sesión</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <form (ngSubmit)="login()">
-    <ion-item>
-      <ion-label position="floating">Correo Electrónico</ion-label>
-      <ion-input type="email" [(ngModel)]="email" name="email" required></ion-input>
-    </ion-item>
-    
-    <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input type="password" [(ngModel)]="password" name="password" required></ion-input>
-    </ion-item>
+<ion-content class="ion-padding" style="background-color: #f7f7f7;">
+  <div class="login-container">
+    <h2 style="text-align: center; color: #3a3a3a; font-weight: bold; margin-bottom: 20px;">Bienvenido</h2>
+    <p style="text-align: center; color: #646464; margin-bottom: 30px;">
+      Ingresa tus credenciales para acceder.
+    </p>
 
-    <div *ngIf="loginError" class="error-message">
-      <ion-icon name="alert-circle" color="danger"></ion-icon>
-      <span>Inicio de sesión incorrecto. Verifica tus credenciales.</span>
-    </div>
+    <form (ngSubmit)="login()" style="max-width: 400px; margin: 0 auto;">
+      <!-- Campo de correo -->
+      <ion-item>
+        <ion-label position="floating">Correo Electrónico</ion-label>
+        <ion-input
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          required
+          autocomplete="email"
+        ></ion-input>
+      </ion-item>
 
-    <ion-button expand="full" type="submit">Iniciar Sesión</ion-button>
-  </form>
-  <ion-button expand="full" (click)="goToRegister()">No tengo cuenta, Registrarme</ion-button>
+      <!-- Campo de contraseña -->
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          autocomplete="current-password"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Mensaje de error -->
+      <div *ngIf="loginError" class="error-message" style="text-align: center; margin-top: 15px; color: #ff4d4d;">
+        <ion-icon name="alert-circle" color="danger"></ion-icon>
+        <span>{{ loginError }}</span>
+      </div>
+
+      <!-- Botón de inicio de sesión -->
+      <ion-button expand="full" type="submit" color="primary" style="margin-top: 20px; border-radius: 10px;">
+        Iniciar Sesión
+      </ion-button>
+    </form>
+
+    <!-- Botón para registrarse -->
+    <ion-button
+      expand="full"
+      (click)="goToRegister()"
+      color="secondary"
+      style="margin-top: 20px; border-radius: 10px;"
+    >
+      No tengo cuenta, Registrarme
+    </ion-button>
+  </div>
 </ion-content>
